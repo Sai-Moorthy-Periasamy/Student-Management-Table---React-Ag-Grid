@@ -1,0 +1,338 @@
+import { useState, useMemo, useRef, useEffect } from "react";
+import { AgGridReact } from "ag-grid-react";
+import "ag-grid-community/styles/ag-theme-alpine.css";
+import 'ag-grid-enterprise';
+import { ModuleRegistry, AllCommunityModule } from "ag-grid-community";
+import { AllEnterpriseModule, LicenseManager } from "ag-grid-enterprise";
+LicenseManager.setLicenseKey('YOUR_LICENSE_KEY_HERE');
+ModuleRegistry.registerModules([AllCommunityModule, AllEnterpriseModule]);
+import BoysLogo from '../boys_icon.jpg'
+import GirlsLogo from '../girls_icon.jpg'
+
+function StudentTable(){
+    const gridRef=useRef();
+    
+    const [rowData] = useState([
+
+        {id:"ST1001", name:"Sai Moorthy", age:18, class:"12th", city:"Madurai",gender:"Male",marks:94,Attendance:97,phone:"+91 94884 94952",join_date:"2020-08-30" },
+        { id:"ST1002", name:"Arjun", age:17, class:"12th", city:"Chennai", gender:"Male", marks:88, Attendance:92, phone:"+91 90031 11223", join_date:"2021-06-12" },
+        { id:"ST1003", name:"Keerthi", age:16, class:"11th", city:"Trichy", gender:"Female", marks:94, Attendance:97, phone:"+91 98941 88112", join_date:"2022-04-09" },
+        { id:"ST1004", name:"Manoj", age:15, class:"10th", city:"Madurai", gender:"Male", marks:73, Attendance:80, phone:"+91 87544 22190", join_date:"2019-12-03" },
+        { id:"ST1005", name:"Priya", age:17, class:"12th", city:"Coimbatore", gender:"Female", marks:91, Attendance:95, phone:"+91 73922 11820", join_date:"2023-02-15" },
+        { id:"ST1006", name:"Rahul", age:16, class:"11th", city:"Salem", gender:"Male", marks:78, Attendance:88, phone:"+91 90220 11784", join_date:"2021-05-22" },
+        { id:"ST1007", name:"Divya", age:17, class:"12th", city:"Erode", gender:"Female", marks:89, Attendance:91, phone:"+91 82205 99401", join_date:"2020-11-09" },
+        { id:"ST1008", name:"Kiran", age:15, class:"10th", city:"Vellore", gender:"Male", marks:67, Attendance:84, phone:"+91 90955 30012", join_date:"2018-09-17" },
+        { id:"ST1009", name:"Meena", age:16, class:"11th", city:"Theni", gender:"Female", marks:92, Attendance:96, phone:"+91 93451 77700", join_date:"2023-01-20" },
+        { id:"ST1010", name:"Suresh", age:17, class:"12th", city:"Kanyakumari", gender:"Male", marks:81, Attendance:89, phone:"+91 97910 66120", join_date:"2022-08-14" },
+
+        { id:"ST1011", name:"Nisha", age:15, class:"10th", city:"Madurai", gender:"Female", marks:85, Attendance:93, phone:"+91 93422 67010", join_date:"2021-03-22" },
+        { id:"ST1012", name:"Vignesh", age:16, class:"11th", city:"Chennai", gender:"Male", marks:79, Attendance:88, phone:"+91 90432 11828", join_date:"2020-11-04" },
+        { id:"ST1013", name:"Lavanya", age:17, class:"12th", city:"Trichy", gender:"Female", marks:95, Attendance:97, phone:"+91 78714 55001", join_date:"2022-06-18" },
+        { id:"ST1014", name:"Karthik", age:15, class:"10th", city:"Salem", gender:"Male", marks:72, Attendance:81, phone:"+91 98841 99213", join_date:"2020-07-28" },
+        { id:"ST1015", name:"Harini", age:16, class:"11th", city:"Erode", gender:"Female", marks:93, Attendance:94, phone:"+91 97344 20405", join_date:"2023-04-07" },
+        { id:"ST1016", name:"Bala", age:17, class:"12th", city:"Coimbatore", gender:"Male", marks:87, Attendance:90, phone:"+91 80726 33630", join_date:"2022-01-30" },
+        { id:"ST1017", name:"Rithika", age:16, class:"11th", city:"Madurai", gender:"Female", marks:90, Attendance:95, phone:"+91 90941 22112", join_date:"2021-09-13" },
+        { id:"ST1018", name:"Shyam", age:17, class:"12th", city:"Chennai", gender:"Male", marks:84, Attendance:89, phone:"+91 99442 11537", join_date:"2020-10-11" },
+        { id:"ST1019", name:"Aishwarya", age:15, class:"10th", city:"Coimbatore", gender:"Female", marks:88, Attendance:92, phone:"+91 95002 66412", join_date:"2022-03-27" },
+        { id:"ST1020", name:"Sathish", age:16, class:"11th", city:"Trichy", gender:"Male", marks:76, Attendance:85, phone:"+91 89732 11410", join_date:"2019-08-19" },
+
+        { id:"ST1021", name:"Monika", age:17, class:"12th", city:"Salem", gender:"Female", marks:92, Attendance:97, phone:"+91 80720 99145", join_date:"2023-07-21" },
+        { id:"ST1022", name:"Ragul", age:15, class:"10th", city:"Erode", gender:"Male", marks:70, Attendance:83, phone:"+91 90871 11250", join_date:"2020-04-18" },
+        { id:"ST1023", name:"Sandhya", age:16, class:"11th", city:"Thanjavur", gender:"Female", marks:89, Attendance:91, phone:"+91 94420 13214", join_date:"2022-02-26" },
+        { id:"ST1024", name:"Deepak", age:17, class:"12th", city:"Kanyakumari", gender:"Male", marks:85, Attendance:90, phone:"+91 93931 44112", join_date:"2021-01-05" },
+        { id:"ST1025", name:"Sneha", age:15, class:"10th", city:"Madurai", gender:"Female", marks:91, Attendance:96, phone:"+91 98948 11402", join_date:"2023-11-14" },
+        { id:"ST1026", name:"Ajay", age:16, class:"11th", city:"Chennai", gender:"Male", marks:77, Attendance:87, phone:"+91 82207 77190", join_date:"2020-06-30" },
+        { id:"ST1027", name:"Revathi", age:17, class:"12th", city:"Coimbatore", gender:"Female", marks:90, Attendance:9, phone:"+91 91234 11820", join_date:"2021-12-03" },
+        { id:"ST1028", name:"Kishore", age:15, class:"10th", city:"Trichy", gender:"Male", marks:74, Attendance:82, phone:"+91 78719 91220", join_date:"2018-10-28" },
+        { id:"ST1029", name:"Janani", age:16, class:"11th", city:"Salem", gender:"Female", marks:93, Attendance:97, phone:"+91 73394 22114", join_date:"2022-09-07" },
+        { id:"ST1030", name:"Prakash", age:17, class:"12th", city:"Erode", gender:"Male", marks:86, Attendance:34, phone:"+91 80733 99112", join_date:"2020-02-14" },
+
+        { id:"ST1031", name:"Varsha", age:15, class:"10th", city:"Vellore", gender:"Female", marks:82, Attendance:90, phone:"+91 90922 66014", join_date:"2023-05-21" },
+        { id:"ST1032", name:"Harish", age:17, class:"12th", city:"Tirunelveli", gender:"Male", marks:88, Attendance:92, phone:"+91 99444 55119", join_date:"2021-04-01" },
+        { id:"ST1033", name:"Ananya", age:16, class:"11th", city:"Namakkal", gender:"Female", marks:91, Attendance:96, phone:"+91 96292 99542", join_date:"2022-07-12" },
+        { id:"ST1034", name:"Gowtham", age:15, class:"10th", city:"Theni", gender:"Male", marks:69, Attendance:78, phone:"+91 80566 33710", join_date:"2019-11-09" },
+        { id:"ST1035", name:"Shalini", age:16, class:"11th", city:"Madurai", gender:"Female", marks:87, Attendance:93, phone:"+91 93428 66781", join_date:"2023-03-30" },
+        { id:"ST1036", name:"Vijay", age:17, class:"12th", city:"Chennai", gender:"Male", marks:84, Attendance:89, phone:"+91 88073 55122", join_date:"2020-09-19" },
+        { id:"ST1037", name:"Jeba", age:15, class:"10th", city:"Coimbatore", gender:"Female", marks:90, Attendance:94, phone:"+91 91220 44211", join_date:"2022-01-14" },
+        { id:"ST1038", name:"Sanjay", age:16, class:"11th", city:"Trichy", gender:"Male", marks:79, Attendance:86, phone:"+91 89944 33020", join_date:"2019-10-05" },
+        { id:"ST1039", name:"Pooja", age:17, class:"12th", city:"Salem", gender:"Female", marks:92, Attendance:98, phone:"+91 94433 71441", join_date:"2023-06-11" },
+        { id:"ST1040", name:"Dinesh", age:15, class:"10th", city:"Erode", gender:"Male", marks:73, Attendance:82, phone:"+91 83000 99210", join_date:"2021-07-09" },
+
+        { id:"ST1041", name:"Helan", age:16, class:"11th", city:"Chennai", gender:"Female", marks:89, Attendance:94, phone:"+91 75002 11421", join_date:"2020-05-17" },
+        { id:"ST1042", name:"Mohan", age:17, class:"12th", city:"Madurai", gender:"Male", marks:83, Attendance:90, phone:"+91 93455 22811", join_date:"2022-02-11" },
+        { id:"ST1043", name:"Ramya", age:15, class:"10th", city:"Thanjavur", gender:"Female", marks:94, Attendance:97, phone:"+91 78700 44212", join_date:"2023-09-23" },
+        { id:"ST1044", name:"Sibi", age:16, class:"11th", city:"Dindigul", gender:"Male", marks:78, Attendance:87, phone:"+91 90876 22110", join_date:"2019-06-02" },
+        { id:"ST1045", name:"Yamini", age:17, class:"12th", city:"Coimbatore", gender:"Female", marks:88, Attendance:93, phone:"+91 90944 88411", join_date:"2021-12-29" },
+        { id:"ST1046", name:"Ramesh", age:15, class:"10th", city:"Trichy", gender:"Male", marks:72, Attendance:84, phone:"+91 80120 77212", join_date:"2020-08-25" },
+        { id:"ST1047", name:"Kaviya", age:16, class:"11th", city:"Chennai", gender:"Female", marks:90, Attendance:96, phone:"+91 82488 11321", join_date:"2022-10-18" },
+        { id:"ST1048", name:"Barath", age:17, class:"12th", city:"Madurai", gender:"Male", marks:85, Attendance:90, phone:"+91 88021 99440", join_date:"2023-04-03" },
+        { id:"ST1049", name:"Anu", age:15, class:"10th", city:"Tirupati", gender:"Female", marks:79, Attendance:88, phone:"+91 91822 66010", join_date:"2020-01-11" },
+        { id:"ST1050", name:"Lokesh", age:16, class:"11th", city:"Salem", gender:"Male", marks:81, Attendance:89, phone:"+91 90998 11490", join_date:"2022-06-09" },
+
+        { id:"ST1051", name:"Swetha", age:17, class:"12th", city:"Coimbatore", gender:"Female", marks:95, Attendance:98, phone:"+91 94402 55810", join_date:"2023-08-29" },
+        { id:"ST1052", name:"Ashwin", age:15, class:"10th", city:"Chidambaram", gender:"Male", marks:74, Attendance:84, phone:"+91 88233 44114", join_date:"2019-07-12" },
+        { id:"ST1053", name:"Ishwarya", age:16, class:"11th", city:"Erode", gender:"Female", marks:89, Attendance:91, phone:"+91 93411 99501", join_date:"2021-10-01" },
+        { id:"ST1054", name:"Gokul", age:17, class:"12th", city:"Chennai", gender:"Male", marks:87, Attendance:92, phone:"+91 98544 22019", join_date:"2022-12-27" },
+        { id:"ST1055", name:"Renu", age:15, class:"10th", city:"Trichy", gender:"Female", marks:88, Attendance:95, phone:"+91 90955 88472", join_date:"2023-02-16" },
+        { id:"ST1056", name:"Sathya", age:16, class:"11th", city:"Coimbatore", gender:"Male", marks:82, Attendance:88, phone:"+91 73920 11430", join_date:"2020-03-13" },
+        { id:"ST1057", name:"Vishali", age:17, class:"12th", city:"Madurai", gender:"Female", marks:91, Attendance:96, phone:"+91 83090 55132", join_date:"2021-11-04" },
+        { id:"ST1058", name:"Rohit", age:15, class:"10th", city:"Chennai", gender:"Male", marks:75, Attendance:83, phone:"+91 90412 99100", join_date:"2019-05-21" },
+        { id:"ST1059", name:"Pavithra", age:16, class:"11th", city:"Salem", gender:"Female", marks:92, Attendance:97, phone:"+91 87555 66210", join_date:"2022-01-07" },
+        { id:"ST1060", name:"Kavin", age:17, class:"12th", city:"Trichy", gender:"Male", marks:80, Attendance:89, phone:"+91 98900 88412", join_date:"2020-10-16" },
+
+        { id:"ST1061", name:"Sangeetha", age:15, class:"10th", city:"Erode", gender:"Female", marks:87, Attendance:92, phone:"+91 94488 55710", join_date:"2023-12-02" },
+        { id:"ST1062", name:"Harsha", age:16, class:"11th", city:"Chennai", gender:"Male", marks:78, Attendance:86, phone:"+91 95022 11211", join_date:"2021-08-19" },
+        { id:"ST1063", name:"Nivetha", age:17, class:"12th", city:"Madurai", gender:"Female", marks:94, Attendance:98, phone:"+91 93611 77110", join_date:"2022-09-29" },
+        { id:"ST1064", name:"Saran", age:15, class:"10th", city:"Coimbatore", gender:"Male", marks:71, Attendance:82, phone:"+91 88322 44771", join_date:"2019-02-03" },
+        { id:"ST1065", name:"Gayathri", age:16, class:"11th", city:"Trichy", gender:"Female", marks:85, Attendance:93, phone:"+91 73711 22841", join_date:"2023-03-22" },
+        { id:"ST1066", name:"Aravind", age:17, class:"12th", city:"Salem", gender:"Male", marks:89, Attendance:91, phone:"+91 90941 55670", join_date:"2020-12-17" },
+        { id:"ST1067", name:"Bharath", age:17, class:"11th", city:"Chennai", gender:"Male", marks:82, Attendance:88, phone:"+91 89392 88176", join_date:"2022-06-30" },
+        { id:"ST1068", name:"Jaya", age:16, class:"10th", city:"Madurai", gender:"Female", marks:97, Attendance:99, phone:"+91 90422 44712", join_date:"2021-01-12" },
+        { id:"ST1069", name:"Karthik", age:18, class:"12th", city:"Trichy", gender:"Male", marks:84, Attendance:87, phone:"+91 94888 66354", join_date:"2019-09-16" },
+        { id:"ST1070", name:"Shalini", age:17, class:"11th", city:"Chennai", gender:"Female", marks:92, Attendance:96, phone:"+91 90909 55241", join_date:"2020-04-27" },
+
+        { id:"ST1071", name:"Suresh", age:15, class:"9th", city:"Coimbatore", gender:"Male", marks:76, Attendance:83, phone:"+91 99887 11345", join_date:"2021-12-22" },
+        { id:"ST1072", name:"Kavya", age:16, class:"10th", city:"Salem", gender:"Female", marks:99, Attendance:99, phone:"+91 82205 77813", join_date:"2022-08-10" },
+        { id:"ST1073", name:"Rithik", age:18, class:"12th", city:"Madurai", gender:"Male", marks:79, Attendance:85, phone:"+91 98745 33124", join_date:"2020-02-06" },
+        { id:"ST1074", name:"Varsha", age:15, class:"9th", city:"Chennai", gender:"Female", marks:94, Attendance:97, phone:"+91 70333 99912", join_date:"2021-05-03" },
+        { id:"ST1075", name:"Mukesh", age:17, class:"11th", city:"Tirunelveli", gender:"Male", marks:88, Attendance:91, phone:"+91 94455 77290", join_date:"2019-10-05" },
+        { id:"ST1076", name:"Jennifer", age:18, class:"12th", city:"Chennai", gender:"Female", marks:97, Attendance:98, phone:"+91 73884 22319", join_date:"2020-06-28" },
+        { id:"ST1077", name:"Surya", age:16, class:"10th", city:"Trichy", gender:"Male", marks:82, Attendance:89, phone:"+91 87542 66120", join_date:"2022-01-09" },
+        { id:"ST1078", name:"Nandini", age:17, class:"11th", city:"Madurai", gender:"Female", marks:93, Attendance:96, phone:"+91 90220 44561", join_date:"2019-04-15" },
+        { id:"ST1079", name:"Kishore", age:15, class:"9th", city:"Erode", gender:"Male", marks:74, Attendance:82, phone:"+91 81144 55190", join_date:"2021-09-17" },
+        { id:"ST1080", name:"Monica", age:16, class:"10th", city:"Coimbatore", gender:"Female", marks:98, Attendance:99, phone:"+91 73390 31122", join_date:"2022-05-11" },
+
+        { id:"ST1081", name:"Ashwin", age:17, class:"11th", city:"Salem", gender:"Male", marks:86, Attendance:92, phone:"+91 90031 22415", join_date:"2020-07-16" },
+        { id:"ST1082", name:"Sahana", age:18, class:"12th", city:"Chennai", gender:"Female", marks:91, Attendance:95, phone:"+91 73920 88772", join_date:"2021-04-19" },
+        { id:"ST1083", name:"Gokul", age:16, class:"10th", city:"Trichy", gender:"Male", marks:75, Attendance:81, phone:"+91 98445 66112", join_date:"2019-11-10" },
+        { id:"ST1084", name:"Anjali", age:15, class:"9th", city:"Madurai", gender:"Female", marks:99, Attendance:98, phone:"+91 80563 23114", join_date:"2022-03-08" },
+        { id:"ST1085", name:"Shyam", age:18, class:"12th", city:"Erode", gender:"Male", marks:89, Attendance:93, phone:"+91 91677 55287", join_date:"2020-08-29" },
+        { id:"ST1086", name:"Rajalakshmi", age:17, class:"11th", city:"Trichy", gender:"Female", marks:90, Attendance:94, phone:"+91 73391 77213", join_date:"2021-10-22" },
+        { id:"ST1087", name:"Naveen", age:16, class:"10th", city:"Madurai", gender:"Male", marks:73, Attendance:83, phone:"+91 99966 44187", join_date:"2019-06-30" },
+        { id:"ST1088", name:"Roshini", age:15, class:"9th", city:"Salem", gender:"Female", marks:92, Attendance:96, phone:"+91 90222 88912", join_date:"2022-09-03" },
+        { id:"ST1089", name:"Santhosh", age:18, class:"12th", city:"Tirunelveli", gender:"Male", marks:81, Attendance:90, phone:"+91 99433 17021", join_date:"2020-01-14" },
+        { id:"ST1090", name:"Meera", age:17, class:"11th", city:"Chennai", gender:"Female", marks:93, Attendance:97, phone:"+91 89782 66412", join_date:"2021-02-20" },
+
+        { id:"ST1091", name:"Aravind", age:16, class:"10th", city:"Coimbatore", gender:"Male", marks:77, Attendance:84, phone:"+91 72004 31145", join_date:"2019-08-21" },
+        { id:"ST1092", name:"Lavanya", age:15, class:"9th", city:"Madurai", gender:"Female", marks:95, Attendance:98, phone:"+91 73550 21578", join_date:"2022-04-12" },
+        { id:"ST1093", name:"Yogesh", age:17, class:"11th", city:"Chennai", gender:"Male", marks:88, Attendance:90, phone:"+91 98441 66290", join_date:"2020-05-02" },
+        { id:"ST1094", name:"Aishwarya", age:18, class:"12th", city:"Trichy", gender:"Female", marks:97, Attendance:99, phone:"+91 93931 22451", join_date:"2021-09-29" },
+        { id:"ST1095", name:"Kannan", age:16, class:"10th", city:"Salem", gender:"Male", marks:79, Attendance:85, phone:"+91 88778 45011", join_date:"2019-10-18" },
+        { id:"ST1096", name:"Sreeja", age:17, class:"11th", city:"Madurai", gender:"Female", marks:50, Attendance:96, phone:"+91 70012 56781", join_date:"2022-03-24" },
+        { id:"ST1097", name:"Manikandan", age:18, class:"12th", city:"Chennai", gender:"Male", marks:84, Attendance:88, phone:"+91 96884 44712", join_date:"2020-12-15" },
+        { id:"ST1098", name:"Varun", age:16, class:"10th", city:"Chennai", gender:"Male", marks:45, Attendance:81, phone:"+91 99880 51324", join_date:"2021-01-11" },
+        { id:"ST1099", name:"Latha", age:15, class:"9th", city:"Tirunelveli", gender:"Female", marks:96, Attendance:98, phone:"+91 90240 11237", join_date:"2022-07-19" },
+        { id:"ST1100", name:"Ravi", age:18, class:"12th", city:"Erode", gender:"Male", marks:83, Attendance:89, phone:"+91 98982 77415", join_date:"2020-09-23" },
+        
+        { id:"ST1101", name:"Tharun", age:17, class:"11th", city:"Madurai", gender:"Male", marks:19, Attendance:94, phone:"+91 98421 11543", join_date:"2021-08-11" },
+        { id:"ST1102", name:"Nisha", age:18, class:"12th", city:"Chennai", gender:"Female", marks:96, Attendance:98, phone:"+91 90931 77125", join_date:"2020-02-14" },
+        { id:"ST1103", name:"Vimal", age:16, class:"10th", city:"Coimbatore", gender:"Male", marks:73, Attendance:83, phone:"+91 81444 99152", join_date:"2019-06-10" },
+        { id:"ST1104", name:"Anu", age:15, class:"9th", city:"Salem", gender:"Female", marks:97, Attendance:99, phone:"+91 98764 22011", join_date:"2022-01-22" },
+        { id:"ST1105", name:"Rohit", age:18, class:"12th", city:"Trichy", gender:"Male", marks:23, Attendance:90, phone:"+91 97862 22914", join_date:"2020-11-29" },
+        { id:"ST1106", name:"Kritika", age:17, class:"11th", city:"Madurai", gender:"Female", marks:1, Attendance:94, phone:"+91 81455 37122", join_date:"2021-03-05" },
+        { id:"ST1107", name:"Sathish", age:16, class:"10th", city:"Tirunelveli", gender:"Male", marks:78, Attendance:88, phone:"+91 73399 55142", join_date:"2019-09-18" },
+        { id:"ST1108", name:"Pavithra", age:15, class:"9th", city:"Chennai", gender:"Female", marks:95, Attendance:97, phone:"+91 90034 82311", join_date:"2022-04-30" },
+    ])
+
+    const columnDefs = useMemo(() => [
+  {
+    field: "id",
+    headerName: "Student ID",
+    sortable: true,
+    enableRowGroup: true,
+    editable: true,
+    filter: "agTextColumnFilter",
+  },
+  {
+    field: "name",
+    headerName: "Name",
+    sortable: true,
+    editable: true,
+    filter: "agTextColumnFilter",
+  },
+  {
+    field: "age",
+    headerName: "Age",
+    sortable: true,
+    filter: "agNumberColumnFilter",
+  },
+  {
+    field: "class",
+    headerName: "Class",
+    sortable: false,
+    editable: true,
+    filter: "agTextColumnFilter",
+    cellRenderer: (params) => {
+      if (!params.data) return null;
+
+      return (
+        <p>
+          <span
+            style={{
+              display:
+                params.data.class === "10th" || params.data.class === "12th"
+                  ? "inline-block"
+                  : "none",
+              borderRadius: "100px",
+              backgroundColor: "rgba(172, 243, 196, 1)",
+              padding: "2px 6px",
+              color: "rgba(9, 32, 102, 1)",
+              fontFamily: "cursive",
+              marginRight: "4px",
+            }}
+          >
+            <b>P</b>
+          </span>
+          {params.data.class}
+        </p>
+      );
+    },
+  },
+  {
+    field: "gender",
+    headerName: "Gender",
+    sortable: true,
+    filter: "agTextColumnFilter",
+    cellRenderer: (params) => {
+      if (!params.data) return null;
+
+      return (
+        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+          <img
+            src={params.data.gender === "Male" ? BoysLogo : GirlsLogo}
+            alt="gender"
+            width={30}
+            style={{ marginTop: "-15px" }}
+          />
+          <p>{params.data.gender}</p>
+        </div>
+      );
+    },
+  },
+  {
+    field: "marks",
+    headerName: "Total Marks",
+    sortable: true,
+    editable: true,
+    filter: "agNumberColumnFilter",
+    cellRenderer: (params) => {
+      if (!params.data) return null;
+
+      return (
+        <p
+          style={{
+            backgroundColor:
+              params.data.marks >= 90
+                ? "rgba(139, 244, 135, 1)"
+                : params.data.marks >= 50
+                ? "rgba(231, 239, 126, 1)"
+                : "rgba(235, 165, 165, 1)",
+            textAlign: "center",
+          }}
+        >
+          <b>{params.data.marks}</b>
+        </p>
+      );
+    },
+  },
+  {
+    field: "Attendance",
+    headerName: "Attendance",
+    sortable: true,
+    editable: true,
+    filter: "agNumberColumnFilter",
+    cellRenderer: (params) => {
+      if (!params.data) return null;
+
+      return (
+        <p
+          style={{
+            backgroundColor:
+              params.data.Attendance >= 90
+                ? "rgba(139, 244, 135, 1)"
+                : params.data.Attendance > 75
+                ? "rgba(231, 239, 126, 1)"
+                : "rgba(222, 139, 139, 1)",
+            textAlign: "center",
+          }}
+        >
+          <b>{params.data.Attendance}</b>
+        </p>
+      );
+    },
+  },
+  {
+    field: "city",
+    headerName: "City",
+    sortable: true,
+    editable: true,
+    filter: "agTextColumnFilter",
+  },
+  {
+    field: "phone",
+    headerName: "Phone Number",
+    sortable: true,
+    editable: true,
+    filter: "agNumberColumnFilter",
+  },
+  {
+    field: "join_date",
+    headerName: "Join Date",
+    sortable: true,
+    filter: "agDateColumnFilter",
+  },
+], []);
+
+
+    const exportCsv=()=>{
+        gridRef.current.api.exportDataAsCsv();
+        console.log(rowData.length);
+    }
+    let dup_arr=new Set();
+    const [value,setValue]=useState(0);
+    useEffect(()=>{
+        for(let i=0;i<rowData.length;i++){
+            dup_arr.add(rowData[i].class);
+        }
+        setValue(dup_arr.size);
+        },[])
+        
+    return <>
+    <div className="container-fluid">
+        <div className="row">
+            <div className="ag-theme-alpine mt-3 ms-5 col-sm-9 col-md-9 col-lg-9" style={{height:630}} >
+                <AgGridReact
+                    rowData={rowData}
+                    columnDefs={columnDefs}
+                    rowSelection={{mode:"multiRow"}}
+                    // pagination={true}
+                    // paginationPageSize={20}
+                    cellSelection={true}
+                    rowGroupPanelShow="always"
+                    ref={gridRef}
+                />
+            </div>
+            <div className="col-sm-2 col-md-2 mt-4 ms-4 col-lg-2">
+                <div style={{border:"2px solid green",backgroundColor:"rgb(217, 255, 216)",borderRadius:"12px",height:"150px"}}>
+                    <h3 className="mt-4" style={{textAlign:"center",fontFamily:"'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif"}}>Total Students</h3>
+                    <h3 className="mt-4" style={{textAlign:"center",fontFamily:"'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif"}}>
+                        {rowData.length}
+                    </h3>
+                   
+                </div> 
+ <br /> <br /> 
+                <div style={{border:"2px solid green",backgroundColor:"rgb(217, 255, 216)",borderRadius:"12px",height:"150px"}}>
+                    <h3 className="mt-4" style={{textAlign:"center",fontFamily:"'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif"}}>Total Classes</h3>
+                    <h3 className="mt-4" style={{textAlign:"center",fontFamily:"'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif"}}>
+                        {value}
+                    </h3>
+                    
+                </div> 
+
+                <button className="m-5 p-3 btn btn-outline-danger" onClick={exportCsv}>Download as CSV</button> 
+            </div>    
+        </div>
+    </div>
+    </>
+}
+export default StudentTable;
